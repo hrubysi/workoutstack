@@ -1,32 +1,156 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <AppSnackbar />
+    <v-navigation-drawer
+      app
+      clipped
+    >
+      <v-list dense>
+        <v-list-item-group>
+          <v-list-item
+            v-for="(item, i) in nav"
+            :key="`nav-item-${i}`"
+            :to="item.link"
+          >
+            <v-list-item-action>
+              <v-icon>mdi-{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+      <v-divider />
+      <v-list dense>
+        <v-list-item-group>
+          <v-list-item
+            v-for="(item, i) in adminNav"
+            :key="`nav-item-${i}`"
+            :to="item.link"
+          >
+            <v-list-item-action>
+              <v-icon>mdi-{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar
+      app
+      clipped-left
+    >
+      <v-toolbar-title>WorkoutStack</v-toolbar-title>
+      <v-spacer />
+      <template v-if="!isLogged">
+        Nepřihlášen
+        <AuthModal>
+          <template v-slot="{ on }">
+            <v-btn
+              class="ml-5"
+              fab
+              small
+              color="accent"
+              v-on="on"
+            >
+              <v-icon>
+                mdi-account-plus
+              </v-icon>
+            </v-btn>
+          </template>
+        </AuthModal>
+      </template>
+      <template v-else>
+        {{ me.name }}
+        <v-menu offset-y nudge-bottom="5">
+          <v-list dense>
+            <v-list-item>
+              <v-list-item-content>
+                <v-btn @click="logout">Odhlásit se</v-btn>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              class="ml-5"
+              fab
+              small
+              color="primary"
+              v-on="on"
+            >
+              <v-icon>
+                mdi-account
+              </v-icon>
+            </v-btn>
+          </template>
+        </v-menu>
+      </template>
+    </v-app-bar>
+
+    <v-content>
+      <v-container>
+        <router-view />
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import AuthModal from '@/components/AuthModal'
+import AppSnackbar from '@/components/AppSnackbar'
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+export default {
+  components: { AuthModal, AppSnackbar },
+  data() {
+    return {
+      user: null,
+      nav: [
+        {
+          title: 'Přehled',
+          icon: 'eye',
+          link: '/',
+        },
+        {
+          title: 'Cviky',
+          icon: 'dumbbell',
+          link: '/exercises',
+        },
+        {
+          title: 'Cvičební plány',
+          icon: 'newspaper-variant-outline',
+          link: '/workouts',
+        },
+      ],
+      adminNav: [
+        {
+          title: 'Správa tagů',
+          icon: 'tag',
+          link: '/admin/tags',
+        },
+      ],
     }
-  }
+  },
+  computed: {
+    ...mapGetters({
+      me: 'user/getMe',
+    }),
+    isLogged() {
+      return !!this.me.id
+    },
+  },
+  methods: {
+    ...mapActions({
+      logout: 'user/logout',
+      fetchUser: 'user/fetchUser',
+    }),
+  },
+  created() {
+    this.fetchUser()
+  },
 }
-</style>
+</script>

@@ -1,0 +1,30 @@
+<template>
+  <v-row>
+    <v-col>
+      <v-autocomplete
+        v-model="tagFilter"
+        :items="tags"
+        chips
+        small-chips
+        multiple
+        deletable-chips
+        filled
+        prepend-icon="mdi-filter"
+        clearable
+        dense
+        hide-selected
+        placeholder="Filtrování dle tagů"
+      />
+    </v-col>
+    <v-col>
+      <v-text-field
+        v-model="search"
+        placeholder="Vyhledávání"
+        prepend-icon="mdi-magnify"
+        filled
+        dense
+        clearable
+      />
+    </v-col>
+  </v-row>
+</template>

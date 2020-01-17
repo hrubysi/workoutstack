@@ -1,0 +1,5 @@
+mutation CreateExercise($name: String!, $description: String!, $tags: [ID!]) {
+    createExercise(input: {name: $name, description: $description, tags: {connect: $tags}}) {
+        id
+    }
+}

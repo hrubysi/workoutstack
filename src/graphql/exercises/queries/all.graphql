@@ -1,0 +1,9 @@
+query {
+    exercises {
+        id
+        name
+        tags {
+            name
+        }
+    }
+}

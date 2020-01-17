@@ -1,0 +1,5 @@
+mutation UpdateExercise($id: ID!, $name: String!, $description: String!, $tags: [ID!]) {
+    updateExercise(input: {id: $id, name: $name, description: $description, tags: {sync: $tags}}) {
+        id
+    }
+}
