@@ -1,6 +1,5 @@
 import apollo, { onLogin, onLogout } from '@/plugins/apollo'
-import { mutations } from '@/graphql/users'
-import { queries } from '../graphql/users'
+import { mutations, queries } from '@/graphql/users'
 
 const defaultValues = {
   me: {

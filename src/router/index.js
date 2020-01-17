@@ -22,6 +22,14 @@ const routes = [
     },
   },
   {
+    path: '/exercises/edit/:id',
+    name: 'editExercise',
+    component: ExercisesPage,
+    // props: {
+    //   edit: true,
+    // },
+  },
+  {
     path: '/exercises',
     name: 'exercises',
     component: ExercisesPage,

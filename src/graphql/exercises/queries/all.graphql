@@ -2,6 +2,7 @@ query {
     exercises {
         id
         name
+        description
         tags {
             name
         }

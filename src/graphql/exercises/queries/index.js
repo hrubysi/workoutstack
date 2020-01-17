@@ -1,5 +1,5 @@
-import me from './me.graphql'
+import all from './all.graphql'
 
 export default {
-  me,
+  all,
 }
