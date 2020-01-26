@@ -1,32 +1,48 @@
 <template>
-  <v-card>
+  <v-card :loading="loading">
     <v-card-title>Dostupné cviky</v-card-title>
-    <v-card-subtitle />
+    <v-card-subtitle class="mt-0">
+      <ExerciseFilters v-model="filters" />
+    </v-card-subtitle>
     <v-card-text>
-      <v-expansion-panels>
-        <draggable
-          :options="draggableOptions"
-          style="width: 100%"
-          :list="list"
-          :sort="false"
-          @change="draggableChange"
-        >
-          <WorkoutExercisePanel
-            v-for="(item, i) in list"
-            :key="`AddExercise-${i}`"
-            :exercise="item"
-          />
-        </draggable>
-      </v-expansion-panels>
+      <ItemsIterator
+        :items="exercises"
+        :filters="filters"
+      >
+        <template v-slot:default="{ items }">
+          <v-expansion-panels>
+            <draggable
+              v-model="items"
+              v-bind="draggableOptions"
+              style="width: 100%"
+              :sort="false"
+              :clone="handleClone"
+              @change="draggableChange"
+            >
+              <WorkoutExercisePanel
+                v-for="item in items"
+                :key="`AddExercise-${item.id}`"
+                :exercise="item"
+              />
+            </draggable>
+          </v-expansion-panels>
+        </template>
+      </ItemsIterator>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import draggable from 'vuedraggable'
 import WorkoutExercisePanel from './WorkoutExercisePanel'
+import ItemsIterator from './ItemsIterator'
+import ExerciseFilters from './ExerciseFilters'
+import filterMixin from '@/mixins/filterMixin'
+
 export default {
-  components: { draggable, WorkoutExercisePanel },
+  components: { ExerciseFilters, ItemsIterator, draggable, WorkoutExercisePanel },
+  mixins: [filterMixin],
   data() {
     return {
       test: 0,
@@ -36,20 +52,18 @@ export default {
           pull: 'clone',
         },
       },
-      list: [
-        {
-          name: 'Jumping Squats',
-        },
-        {
-          name: 'Jumping Squats2',
-        },
-        {
-          name: 'Jumping Squats3',
-        },
-      ],
     }
   },
+  computed: {
+    ...mapGetters({
+      loading: 'exercises/isLoading',
+      exercises: 'exercises/getAll',
+    }),
+  },
   methods: {
+    handleClone(item) {
+      return { ...item }
+    },
     draggableChange({ added }) {
       this.list.splice(added.newIndex, 1)
     },

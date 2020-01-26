@@ -22,12 +22,12 @@ const routes = [
     },
   },
   {
-    path: '/exercises/edit/:id',
-    name: 'editExercise',
+    path: '/exercises/detail/:id',
+    name: 'exerciseDetail',
     component: ExercisesPage,
-    // props: {
-    //   edit: true,
-    // },
+    props: {
+      detail: true,
+    },
   },
   {
     path: '/exercises',
@@ -43,8 +43,8 @@ const routes = [
     },
   },
   {
-    path: '/workouts/:slug',
-    name: 'workout-detail',
+    path: '/workouts/:id',
+    name: 'workoutDetail',
     component: WorkoutDetailPage,
   },
   {

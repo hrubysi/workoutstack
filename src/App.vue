@@ -9,7 +9,7 @@
         <v-list-item-group>
           <v-list-item
             v-for="(item, i) in nav"
-            :key="`nav-item-${i}`"
+            :key="`NavItem-${i}`"
             :to="item.link"
           >
             <v-list-item-action>
@@ -66,11 +66,16 @@
       </template>
       <template v-else>
         {{ me.name }}
-        <v-menu offset-y nudge-bottom="5">
+        <v-menu
+          offset-y
+          nudge-bottom="5"
+        >
           <v-list dense>
             <v-list-item>
               <v-list-item-content>
-                <v-btn @click="logout">Odhlásit se</v-btn>
+                <v-btn @click="logout">
+                  Odhlásit se
+                </v-btn>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -143,14 +148,20 @@ export default {
       return !!this.me.id
     },
   },
+  created() {
+    this.fetchUser()
+    this.fetchTags()
+    this.fetchExercises()
+    this.fetchWorkouts()
+  },
   methods: {
     ...mapActions({
       logout: 'user/logout',
       fetchUser: 'user/fetchUser',
+      fetchTags: 'tags/fetchTags',
+      fetchExercises: 'exercises/fetchExercises',
+      fetchWorkouts: 'workouts/fetchWorkouts',
     }),
-  },
-  created() {
-    this.fetchUser()
   },
 }
 </script>

@@ -1,0 +1,16 @@
+#import '../../tags/fragments/tagFragment.graphql'
+
+fragment Exercise on Exercise {
+    id
+    name
+    description
+    youtube_id
+    user_id
+    tags {
+        ...Tag
+    }
+    pivot {
+        amount
+        mode
+    }
+}

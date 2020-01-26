@@ -17,7 +17,15 @@ type Exercise {
     description: String
     id: ID!
     name: String!
+    pivot: ExerciseWorkoutPivot
     tags: [Tag!]
+    user_id: Int!
+    youtube_id: String
+}
+
+type ExerciseWorkoutPivot {
+    amount: Int!
+    mode: Int!
 }
 
 type ForgotPasswordResponse {
@@ -39,6 +47,9 @@ type Mutation {
     logout: LogoutResponse!
     refreshToken(input: RefreshTokenInput): RefreshTokenPayload!
     register(input: RegisterInput): RegisterResponse!
+    removeExercise(input: RemoveExerciseInput!): Exercise
+    removeTag(input: RemoveTagInput!): Tag
+    removeWorkout(input: RemoveWorkoutInput!): Workout
     socialLogin(input: SocialLoginInput!): AuthPayload!
     updateExercise(input: UpdateExerciseInput!): Exercise!
     updateForgottenPassword(input: NewPasswordWithCodeInput): ForgotPasswordResponse!
@@ -89,7 +100,7 @@ type PaginatorInfo {
 
 type Query {
     exercise(id: Int): Exercise
-    exercises(search: String): [Exercise!]
+    exercises(filter: ExercisesFilter): [Exercise!]
     me: User
     tags: [Tag!]
     user(id: ID): User
@@ -143,6 +154,7 @@ type Workout {
     public: Boolean!
     rounds: Int!
     tags: [Tag!]
+    user_id: Int!
 }
 
 enum RegisterStatuses {
@@ -172,6 +184,8 @@ input CreateExerciseInput {
     description: String
     name: String!
     tags: TagBelongsToMany
+    user_id: Int!
+    youtube_id: String
 }
 
 input CreateTagInput {
@@ -185,17 +199,24 @@ input CreateWorkoutInput {
     public: Boolean!
     rounds: Int!
     tags: TagBelongsToMany
+    user_id: Int!
 }
 
 input ExerciseWorkoutBelongsToMany {
     connect: [ExerciseWorkoutBelongsToManyPivot!]
     disconnect: [ID!]
+    sync: [ExerciseWorkoutBelongsToManyPivot!]
 }
 
 input ExerciseWorkoutBelongsToManyPivot {
     amount: Int!
-    exercise_id: Int!
+    id: ID!
     mode: Int!
+}
+
+input ExercisesFilter {
+    search: String
+    tags: [ID!]
 }
 
 input ForgotPasswordInput {
@@ -233,6 +254,18 @@ input RegisterInput {
     password_confirmation: String!
 }
 
+input RemoveExerciseInput {
+    id: ID!
+}
+
+input RemoveTagInput {
+    id: ID!
+}
+
+input RemoveWorkoutInput {
+    id: ID!
+}
+
 input SocialLoginInput {
     provider: String!
     token: String!
@@ -241,6 +274,7 @@ input SocialLoginInput {
 input TagBelongsToMany {
     connect: [ID!]
     disconnect: [ID!]
+    sync: [ID!]
 }
 
 input UpdateExerciseInput {

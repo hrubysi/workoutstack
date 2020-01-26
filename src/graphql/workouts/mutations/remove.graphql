@@ -1,0 +1,5 @@
+mutation RemoveWorkout($id: ID!) {
+    removeWorkout(input: { id: $id }) {
+        id
+    }
+}

@@ -1,49 +1,49 @@
 import apollo from '@/plugins/apollo'
-import { mutations, queries } from '@/graphql/exercises'
+import { mutations, queries } from '@/graphql/workouts'
 
 export default {
   namespaced: true,
   state: {
-    exercises: [],
+    workouts: [],
     loading: false,
   },
   getters: {
     getAll: state => {
-      return state.exercises
+      return state.workouts
     },
     find: (state) => (id) => {
-      return state.exercises.find(item => item.id === id)
+      return state.workouts.find(item => item.id === id)
     },
     isLoading: state => {
       return state.loading
     },
   },
   mutations: {
-    ADD_EXERCISE(state, exercise) {
-      state.exercises.push(exercise)
+    ADD_WORKOUT(state, workout) {
+      state.workouts.push(workout)
     },
-    UPDATE_EXERCISE(state, exercise) {
-      state.exercises = state.exercises.map(item => {
-        return item.id === exercise.id ? exercise : item
+    UPDATE_WORKOUT(state, workout) {
+      state.workouts = state.workouts.map(item => {
+        return item.id === workout.id ? workout : item
       })
     },
-    SET_EXERCISES(state, exercises) {
-      state.exercises = exercises
+    SET_WORKOUTS(state, workouts) {
+      state.workouts = workouts
     },
     SET_LOADING(state, loading) {
       state.loading = loading
     },
-    REMOVE_EXERCISE(state, id) {
-      state.exercises = state.exercises.filter(exercise => exercise.id !== id)
+    REMOVE_WORKOUT(state, id) {
+      state.workouts = state.workouts.filter(workout => workout.id !== id)
     },
   },
   actions: {
-    fetchExercises({ commit }, { then = () => {} } = {}) {
+    fetchWorkouts({ commit }, { then = () => {} } = {}) {
       commit('SET_LOADING', true)
       apollo.query({
         query: queries.all,
       }).then((result) => {
-        commit('SET_EXERCISES', result.data.exercises)
+        commit('SET_WORKOUTS', result.data.workouts)
       }).catch(e => {
         console.log(e)
       }).finally(() => {
@@ -60,7 +60,7 @@ export default {
           ...exercise,
         },
       }).then((result) => {
-        commit('ADD_EXERCISE', result.data.createExercise)
+        commit('ADD_WORKOUT', result.data.createWorkout)
       }).catch(e => {
         console.log(e)
       }).finally(() => {
@@ -74,7 +74,7 @@ export default {
         mutation: mutations.update,
         variables: exercise,
       }).then((result) => {
-        commit('UPDATE_EXERCISE', result.data.updateExercise)
+        commit('UPDATE_WORKOUT', result.data.updateWorkout)
       }).catch(e => {
         console.log(e)
       }).finally(() => {
@@ -88,7 +88,7 @@ export default {
         mutation: mutations.remove,
         variables: { id },
       }).then((result) => {
-        commit('REMOVE_EXERCISE', result.data.removeExercise.id)
+        commit('REMOVE_WORKOUT', result.data.removeWorkout.id)
       }).catch(e => {
         console.log(e)
       }).finally(() => {

@@ -1,5 +1,5 @@
-mutation RemoveExercise($id: ID!, $name: String!, $description: String!, $tags: [ID!]) {
-    removeExercise(input: {id: $id, name: $name, description: $description, tags: {sync: $tags}}) {
+mutation RemoveExercise($id: ID!) {
+    removeExercise(input: { id: $id }) {
         id
     }
 }

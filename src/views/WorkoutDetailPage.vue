@@ -1,14 +1,24 @@
 <template>
   <v-container>
+    <h1 class="headline mb-3">
+      <template v-if="create">
+        Vytvoření nového cvičebního plánu
+      </template>
+      <template v-else>
+        Cvičebního plán
+      </template>
+    </h1>
     <v-row>
-      <v-col>
-        <WorkoutCard
+      <v-col md="6">
+        <WorkoutDetailCard
           :editable="edit"
+          :create="create"
+          :workout="workout"
           @edit="toggleEdit"
           @play="togglePlay"
         />
       </v-col>
-      <v-col>
+      <v-col md="6">
         <WorkoutAddExercises v-if="edit" />
       </v-col>
     </v-row>
@@ -16,11 +26,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import WorkoutAddExercises from '@/components/WorkoutAddExercises'
-import WorkoutCard from '@/components/WorkoutCard'
+import WorkoutDetailCard from '@/components/WorkoutDetailCard'
 
 export default {
-  components: { WorkoutAddExercises, WorkoutCard },
+  components: { WorkoutAddExercises, WorkoutDetailCard },
   props: {
     create: {
       type: Boolean,
@@ -33,6 +44,20 @@ export default {
       edit: this.create,
       play: false,
     }
+  },
+  computed: {
+    ...mapGetters({
+      loading: 'workouts/isLoading',
+      getWorkout: 'workouts/find',
+    }),
+    workout() {
+      const id = this.$route.params.id
+      if (id && !this.loading) {
+        return this.getWorkout(id)
+      }
+
+      return null
+    },
   },
   methods: {
     toggleEdit(edit = true) {

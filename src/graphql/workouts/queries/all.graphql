@@ -1,0 +1,7 @@
+#import '../fragments/workoutFragment.graphql'
+
+query allWorkouts {
+    workouts {
+        ...Workout
+    }
+}

@@ -1,0 +1,16 @@
+#import '../../exercises/fragments/exerciseFragment.graphql'
+#import '../../tags/fragments/tagFragment.graphql'
+
+fragment Workout on Workout {
+    id
+    name
+    user_id
+    public
+    rounds
+    tags {
+        ...Tag
+    }
+    exercises {
+        ...Exercise
+    }
+}

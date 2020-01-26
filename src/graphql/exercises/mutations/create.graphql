@@ -1,5 +1,19 @@
-mutation CreateExercise($name: String!, $description: String!, $tags: [ID!]) {
-    createExercise(input: {name: $name, description: $description, tags: {connect: $tags}}) {
-        id
+#import '../fragments/exerciseFragment.graphql'
+
+mutation CreateExercise(
+    $name: String!,
+    $description: String!,
+    $user_id: Int!,
+    $youtube_id: String,
+    $tags: [ID!]
+) {
+    createExercise(input: {
+        name: $name,
+        description: $description,
+        user_id: $user_id,
+        youtube_id: $youtube_id,
+        tags: {connect: $tags}
+    }) {
+        ...Exercise
     }
 }

@@ -1,0 +1,21 @@
+#import '../fragments/workoutFragment.graphql'
+
+mutation UpdateWorkout(
+    $id: ID!
+    $name: String!
+    $public: Boolean!
+    $rounds: Int!
+    $tags: [ID!]
+    $exercises: [ExerciseWorkoutBelongsToManyPivot!]
+) {
+    updateWorkout(input: {
+        id: $id,
+        name: $name,
+        rounds: $rounds
+        public: $public
+        tags: {sync: $tags}
+        exercises: {sync: $exercises}
+    }) {
+        ...Workout
+    }
+}

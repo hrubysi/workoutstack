@@ -6,45 +6,80 @@
       :disable-icon-rotate="editable"
     >
       {{ exercise.name }}
-      <div class="d-flex align-center ml-5">
-        <div
-          v-if="exercise.amount"
-          class="headline font-weight-regular"
+      <div
+        v-if="exercise.pivot"
+        class="d-flex align-center ml-5"
+      >
+        <template
+          v-if="exercise.pivot.amount"
         >
-          5<span
-            class="title blue--text text--darken-3"
-            style="margin-left: 1px"
-          >x</span>
-        </div>
+          <div
+            v-if="exercise.pivot.mode === 0"
+            class="headline font-weight-regular"
+          >
+            {{ exercise.pivot.amount }}
+            <span
+              class="title blue--text text--darken-3"
+              style="margin-left: 1px"
+            >x</span>
+          </div>
+          <div
+            v-else
+            class="d-flex align-center body-1"
+          >
+            <v-icon color="blue darken-3">
+              mdi-clock
+            </v-icon>
+            <span
+              class="ml-2"
+              v-text="`${exercise.pivot.amount} s`"
+            />
+          </div>
+        </template>
         <div
-          v-if="exercise.rest"
+          v-if="restTime != null"
           class="d-flex align-center ml-5 body-1"
         >
           <v-icon color="blue darken-3">
             mdi-timer-sand
           </v-icon>
-          <span>60s</span>
+          <span
+            class="ml-1"
+            v-text="`${restTime} s`"
+          />
         </div>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content color="grey darken-4">
       <template v-if="!editable">
-        <p>
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin mattis lacinia justo. Pellentesque sapien. Pellentesque arcu.
-          <br>Suspendisse sagittis ultrices augue. Etiam quis quam. Duis sapien nunc, commodo et, interdum suscipit, sollicitudin et, dolor. Donec quis nibh at felis congue commodo.
-        </p>
-        <youtube
-          v-card-text
-          class="mt-3"
-          :video-id="'r9xUofg0B04'"
-          player-width="100%"
-        />
+        <v-card
+          color="grey darken-3 mb-2"
+          flat
+        >
+          <v-card-text class="py-2">
+            {{ exercise.description }}
+          </v-card-text>
+        </v-card>
+        <template v-if="exercise.youtube_id">
+          <v-skeleton-loader
+            v-if="!videoReady"
+            type="image"
+          />
+          <div v-show="videoReady">
+            <youtube
+              :video-id="exercise.youtube_id"
+              :fit-parent="true"
+              class="mt-3"
+              @ready="videoReady = true"
+            />
+          </div>
+        </template>
       </template>
       <template v-else>
         <v-row>
           <v-col>
             <v-radio-group
-              :value="0"
+              v-model="form.mode"
               hide-details=""
             >
               <div class="d-flex align-center">
@@ -63,15 +98,31 @@
               </div>
             </v-radio-group>
           </v-col>
+          <v-col>
+            <v-switch
+              v-model="enableCustomRestTime"
+              label="Vlastní čas pauzy"
+            />
+          </v-col>
         </v-row>
         <v-row>
-          <v-col>
-            <v-switch label="Vlastní čas pauzy" />
-          </v-col>
-          <v-col>
+          <v-col md="6">
             <v-text-field
+              v-model="form.amount"
+              :label="form.mode ? 'Doba trvání (s)' : 'Počet opakování'"
               type="number"
-              label="Počet opakování"
+              min="1"
+            />
+          </v-col>
+          <v-col
+            v-if="enableCustomRestTime"
+            md="6"
+          >
+            <v-text-field
+              v-model="form.rest"
+              type="number"
+              label="Čas pauzy"
+              min="0"
             />
           </v-col>
         </v-row>
@@ -81,6 +132,12 @@
 </template>
 
 <script>
+const defaultForm = {
+  mode: 0,
+  amount: '',
+  rest: 0,
+}
+
 export default {
   props: {
     editable: {
@@ -90,9 +147,50 @@ export default {
     exercise: {
       type: Object,
       required: true,
-      default: () => ({ name: 'Jumping PushUps' }),
+    },
+    defaultRest: {
+      type: String,
+      default: '0',
     },
   },
+  data() {
+    return {
+      enableCustomRestTime: false,
+      videoReady: false,
+      form: defaultForm,
+    }
+  },
+  computed: {
+    restTime() {
+      const restTime = this.enableCustomRestTime ? this.form.rest : this.defaultRest
+      return Number.isInteger(parseInt(restTime)) ? restTime : null
+    },
+  },
+  // watch: {
+  //   form: {
+  //     deep: true,
+  //     handler() {
+  //       console.log('wtffff form')
+  //       this.onChange()
+  //     },
+  //   },
+  //   restTime() {
+  //     console.log('wtffff restTime')
+  //     this.onChange()
+  //   },
+  // },
+  // methods: {
+  //   onChange() {
+  //     console.log('wtffff')
+  //     this.$emit('exerciseInput', {
+  //       id: this.exercise.id,
+  //       pivot: {
+  //         ...this.form,
+  //         rest: this.restTime,
+  //       },
+  //     })
+  //   },
+  // },
 }
 </script>
 

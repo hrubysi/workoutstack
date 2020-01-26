@@ -1,0 +1,21 @@
+#import '../fragments/workoutFragment.graphql'
+
+mutation CreateWorkout(
+    $name: String!
+    $public: Boolean!
+    $user_id: Int!
+    $rounds: Int!
+    $tags: [ID!]
+    $exercises: [ExerciseWorkoutBelongsToManyPivot!]
+) {
+    createWorkout(input: {
+        name: $name,
+        user_id: $user_id,
+        public: $public
+        rounds: $rounds
+        exercises: {connect: $exercises}
+        tags: {connect: $tags}
+    }) {
+        ...Workout
+    }
+}

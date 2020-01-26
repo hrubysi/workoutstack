@@ -1,10 +1,7 @@
-query {
+#import '../fragments/exerciseFragment.graphql'
+
+query allExercises {
     exercises {
-        id
-        name
-        description
-        tags {
-            name
-        }
+        ...Exercise
     }
 }

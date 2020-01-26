@@ -1,21 +1,58 @@
 <template>
   <v-container fluid>
-    <ExerciseFilters/>
-    <v-data-iterator
+    <div class="d-flex justify-space-between">
+      <h1 class="headline">
+        Cviky
+      </h1>
+      <ExerciseFilters
+        v-model="filters"
+        class="px-10"
+      />
+      <v-btn
+        color="accent"
+        dark
+        fab
+        small
+        :to="{name: 'createExercise'}"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </div>
+    <ItemsIterator
+      :filters="filters"
       :items="exercises"
       :loading="loading"
     >
-      <template v-slot:default="props">
+      <template v-slot:loading>
         <v-row>
           <v-col
-            v-for="exercise in props.items"
+            v-for="i in 4"
+            :key="`placeholder-${i}`"
+            cols="12"
+            md="3"
+          >
+            <v-skeleton-loader type="image" />
+          </v-col>
+        </v-row>
+      </template>
+      <template v-slot:empty>
+        <p>Nebyly nalezeny žádné cviky.</p>
+      </template>
+      <template v-slot:default="{ items }">
+        <v-row>
+          <v-col
+            v-for="exercise in items"
             :key="exercise.id"
             cols="12"
             md="3"
           >
-            <v-card :to="{name: 'editExercise', params: {id: exercise.id}}">
+            <v-card
+              :to="{name: 'exerciseDetail', params: {id: exercise.id}}"
+              height="100%"
+              hover
+            >
               <v-card-title>
-                  {{ exercise.name }}
+                {{ exercise.name }}
               </v-card-title>
               <v-card-text>
                 <div>
@@ -34,71 +71,81 @@
           </v-col>
         </v-row>
       </template>
-    </v-data-iterator>
+    </ItemsIterator>
 
-    <v-btn
-      bottom
-      color="accent"
-      dark
-      fab
-      fixed
+    <v-navigation-drawer
+      :value="exerciseDrawer"
       right
-      :to="{name: 'createExercise'}"
+      fixed
+      width="500px"
+      temporary
+      @input="onDrawerChange"
     >
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
-
-    <ExerciseDrawer v-model="exerciseDrawer"/>
+      <ExerciseDrawer
+        v-if="exerciseDrawer"
+        :exercise="activeExercise"
+        @close="onDrawerChange(false)"
+      />
+    </v-navigation-drawer>
   </v-container>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import ExerciseFilters from '@/components/ExerciseFilters'
 import ExerciseDrawer from '@/components/ExerciseDrawer'
+import ItemsIterator from '@/components/ItemsIterator'
+import ExerciseFilters from '@/components/ExerciseFilters'
 
 export default {
-  components: { ExerciseDrawer, ExerciseFilters },
+  components: { ExerciseFilters, ItemsIterator, ExerciseDrawer },
   props: {
     create: {
+      type: Boolean,
+      default: false,
+    },
+    detail: {
       type: Boolean,
       default: false,
     },
   },
   data() {
     return {
-      search: '',
-      itemsPerPageArray: [4, 8, 12],
-      page: 1,
-      itemsPerPage: 4,
       exerciseDrawer: this.create,
-      tagFilter: null,
-      tags: ['Test1', 'Test2', 'Abs'],
+      filters: {
+        search: '',
+        tags: [],
+      },
     }
   },
   computed: {
     ...mapGetters({
+      findExercise: 'exercises/find',
       exercises: 'exercises/getAll',
+      tags: 'tags/getAll',
       loading: 'exercises/isLoading',
     }),
-  },
-  methods: {
-    ...mapActions({
-      fetchExercises: 'exercises/fetchExercises',
-    }),
+    activeExercise() {
+      if (this.exercises && this.$route.params.id) {
+        return this.findExercise(this.$route.params.id)
+      }
+
+      return null
+    },
+    computedDrawer() {
+      return !!this.activeExercise || this.create
+    },
   },
   watch: {
-    create(newValue) {
-      this.exerciseDrawer = newValue
+    computedDrawer(value) {
+      this.exerciseDrawer = value
     },
-    exerciseDrawer(newValue) {
-      if (this.create && !newValue) {
+  },
+  methods: {
+    onDrawerChange(value) {
+      if (!value) {
         this.$router.push({ name: 'exercises' })
       }
     },
-  },
-  mounted() {
-    this.fetchExercises()
   },
 }
 </script>
