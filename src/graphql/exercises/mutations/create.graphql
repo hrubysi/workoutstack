@@ -2,15 +2,15 @@
 
 mutation CreateExercise(
     $name: String!,
-    $description: String!,
     $user_id: Int!,
+    $description: String,
     $youtube_id: String,
     $tags: [ID!]
 ) {
     createExercise(input: {
         name: $name,
-        description: $description,
         user_id: $user_id,
+        description: $description,
         youtube_id: $youtube_id,
         tags: {connect: $tags}
     }) {

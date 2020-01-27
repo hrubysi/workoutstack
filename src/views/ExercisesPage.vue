@@ -9,6 +9,7 @@
         class="px-10"
       />
       <v-btn
+        v-if="isLoggedIn"
         color="accent"
         dark
         fab
@@ -123,6 +124,7 @@ export default {
       exercises: 'exercises/getAll',
       tags: 'tags/getAll',
       loading: 'exercises/isLoading',
+      isLoggedIn: 'user/isLoggedIn',
     }),
     activeExercise() {
       if (this.exercises && this.$route.params.id) {
@@ -142,7 +144,7 @@ export default {
   },
   methods: {
     onDrawerChange(value) {
-      if (!value) {
+      if (!value && (this.create || this.detail)) {
         this.$router.push({ name: 'exercises' })
       }
     },

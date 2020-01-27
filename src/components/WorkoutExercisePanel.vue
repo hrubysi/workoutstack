@@ -2,6 +2,7 @@
   <v-expansion-panel>
     <v-expansion-panel-header
       color="grey darken-4"
+      class="py-0"
       :expand-icon="editable ? 'mdi-pencil' : '$expand'"
       :disable-icon-rotate="editable"
     >
@@ -37,7 +38,7 @@
           </div>
         </template>
         <div
-          v-if="restTime != null"
+          v-if="restTimeOutput != null"
           class="d-flex align-center ml-5 body-1"
         >
           <v-icon color="blue darken-3">
@@ -45,7 +46,7 @@
           </v-icon>
           <span
             class="ml-1"
-            v-text="`${restTime} s`"
+            v-text="`${restTimeOutput} s`"
           />
         </div>
       </div>
@@ -53,6 +54,7 @@
     <v-expansion-panel-content color="grey darken-4">
       <template v-if="!editable">
         <v-card
+          v-if="exercise.description"
           color="grey darken-3 mb-2"
           flat
         >
@@ -149,51 +151,53 @@ export default {
       required: true,
     },
     defaultRest: {
-      type: String,
-      default: '0',
+      type: Number,
+      default: 0,
     },
   },
   data() {
     return {
       enableCustomRestTime: false,
       videoReady: false,
-      form: defaultForm,
+      form: { ...defaultForm },
     }
   },
   computed: {
     restTime() {
+      return this.enableCustomRestTime ? this.form.rest : null
+    },
+    restTimeOutput() {
       const restTime = this.enableCustomRestTime ? this.form.rest : this.defaultRest
       return Number.isInteger(parseInt(restTime)) ? restTime : null
     },
   },
-  // watch: {
-  //   form: {
-  //     deep: true,
-  //     handler() {
-  //       console.log('wtffff form')
-  //       this.onChange()
-  //     },
-  //   },
-  //   restTime() {
-  //     console.log('wtffff restTime')
-  //     this.onChange()
-  //   },
-  // },
-  // methods: {
-  //   onChange() {
-  //     console.log('wtffff')
-  //     this.$emit('exerciseInput', {
-  //       id: this.exercise.id,
-  //       pivot: {
-  //         ...this.form,
-  //         rest: this.restTime,
-  //       },
-  //     })
-  //   },
-  // },
+  watch: {
+    form: {
+      deep: true,
+      handler() {
+        this.onChange()
+      },
+    },
+    restTime() {
+      this.onChange()
+    },
+  },
+  methods: {
+    onChange() {
+      this.$emit('exerciseInput', {
+        id: this.exercise.id,
+        pivot: {
+          ...this.form,
+          rest: this.restTime,
+        },
+      })
+    },
+  },
 }
 </script>
 
 <style scoped>
-
+  .v-expansion-panel-content__wrap {
+    padding-bottom: 10px;
+  }
 </style>

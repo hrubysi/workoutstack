@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <div class="d-flex justify-space-between">
-      <h1 class="headline">
+      <h1 class="headline flex-shrink-0">
         Cvičební plány
       </h1>
       <ExerciseFilters
@@ -9,6 +9,7 @@
         class="px-10"
       />
       <v-btn
+        v-if="isLoggedIn"
         color="accent"
         dark
         fab
@@ -68,6 +69,7 @@ export default {
     ...mapGetters({
       loading: 'workouts/isLoading',
       workouts: 'workouts/getAll',
+      isLoggedIn: 'user/isLoggedIn',
     }),
   },
 }

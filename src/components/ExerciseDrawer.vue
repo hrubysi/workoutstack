@@ -74,11 +74,8 @@
               {{ exercise.name }}
             </div>
             <div v-if="editable">
-              <v-dialog
-                v-model="confirmDialog"
-                max-width="300"
-              >
-                <template v-slot:activator="{ on }">
+              <ConfirmDialog @confirm="onDelete">
+                <template v-slot:default="{on}">
                   <v-btn
                     class="mr-3"
                     color="accent darken-4"
@@ -90,28 +87,10 @@
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </template>
-                <v-card>
-                  <v-card-title>
-                    Potvrzení akce
-                  </v-card-title>
-                  <v-card-text>Opravdu chcete smazat cvik <b>{{ exercise.name }}</b>?</v-card-text>
-                  <v-card-actions>
-                    <v-spacer />
-                    <v-btn
-                      color="primary"
-                      @click="confirmDialog = false"
-                    >
-                      Zrušit
-                    </v-btn>
-                    <v-btn
-                      color="accent darken-4"
-                      @click="onDelete"
-                    >
-                      Smazat
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
+                <template v-slot:text>
+                  Opravdu chcete smazat cvik <b>{{ exercise.name }}</b>?
+                </template>
+              </ConfirmDialog>
               <v-btn
                 color="accent"
                 fab
@@ -182,19 +161,10 @@
   </v-container>
 </template>
 
-<style lang="scss" scoped>
-  .v-card--loading {
-    cursor: progress;
-
-    * {
-      pointer-events: none;
-    }
-  }
-</style>
-
 <script>
 import { isEqual, get } from 'lodash-es'
 import { mapGetters, mapActions } from 'vuex'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 const defaultForm = {
   description: '',
@@ -204,6 +174,7 @@ const defaultForm = {
 }
 
 export default {
+  components: { ConfirmDialog },
   props: {
     exercise: {
       type: Object,
@@ -212,7 +183,6 @@ export default {
   },
   data() {
     return {
-      confirmDialog: false,
       edit: false,
       form: this.exercise ? { ...this.exercise } : { ...defaultForm },
       videoReady: false,
@@ -285,3 +255,13 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+  .v-card--loading {
+    cursor: progress;
+
+    * {
+      pointer-events: none;
+    }
+  }
+</style>

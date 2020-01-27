@@ -4,6 +4,7 @@ import router from './router'
 import store from './store/store'
 import vuetify from './plugins/vuetify'
 import './plugins/youtube'
+import './plugins/VeeValidate'
 
 Vue.config.productionTip = false
 

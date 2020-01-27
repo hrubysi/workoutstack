@@ -1,17 +1,22 @@
 <template>
   <v-card
-    :to="{name: 'workoutDetail', params: {id: workout.id}}"
     class="WorkoutListCard"
+    height="100%"
   >
-    <v-card-title>
-      {{ workout.name }}
-    </v-card-title>
+    <router-link
+      :to="{name: 'workoutDetail', params: {id: workout.id}}"
+      class="WorkoutListCard__titleLink"
+    >
+      <v-card-title class="WorkoutListCard__title">
+        {{ workout.name }}
+      </v-card-title>
+    </router-link>
     <v-card-text>
       <div class="d-flex align-center">
         <div class="d-flex align-center mr-3">
           <v-icon
             small
-            class="mr-2"
+            class="mr-1"
           >
             mdi-timer
           </v-icon>
@@ -20,59 +25,65 @@
         <div class="d-flex align-center mr-3">
           <v-icon
             small
-            class="mr-2"
+            class="mr-1"
           >
             mdi-dumbbell
           </v-icon>
           <span class="subtitle-2">{{ workout.exercises.length }} cviků</span>
         </div>
-        <!--        <div class="d-flex align-center">-->
-        <!--          <v-icon class="mr-2">-->
-        <!--            mdi-timer-->
-        <!--          </v-icon>-->
-        <!--          <span class="subtitle-2">5 kol</span>-->
-        <!--        </div>-->
+        <div class="d-flex align-center">
+          <v-icon
+            small
+            class="mr-1"
+          >
+            mdi-timer-sand
+          </v-icon>
+          <span class="subtitle-2">30s / 60s</span>
+        </div>
       </div>
       <div
         v-if="workout.tags.length"
         class="mt-4"
       >
         <v-chip
-          v-for="(tag, i) in workout.tags"
-          :key="i"
+          v-for="tag in workout.tags"
+          :key="`WorkoutList-Tag-${tag.id}`"
           class="mr-1 mb-1"
           color="primary"
           small
         >
-          {{ tag }}
+          {{ tag.name }}
         </v-chip>
       </div>
     </v-card-text>
-    <v-divider />
-    <v-card-actions>
-      <v-expansion-panels
-        flat
-      >
-        <v-expansion-panel>
-          <v-expansion-panel-header>
-            Cviky
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-list
-              dense
-              rounded
-            >
-              <v-list-item class="grey darken-4">
-                <v-list-item-title>Test</v-list-item-title>
-              </v-list-item>
-              <v-list-item class="grey darken-4">
-                <v-list-item-title>Test</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </v-card-actions>
+    <template v-if="workout.exercises.length">
+      <v-divider />
+      <v-card-actions>
+        <v-expansion-panels
+          flat
+        >
+          <v-expansion-panel>
+            <v-expansion-panel-header>
+              Cviky
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-list
+                dense
+                rounded
+              >
+                <v-list-item
+                  v-for="exercise in workout.exercises"
+                  :key="`WorkoutList-Exercise-${exercise.id}`"
+                  class="grey darken-4"
+                >
+                  <v-list-item-title>{{ exercise.name }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-card-actions>
+    </template>
   </v-card>
 </template>
 
@@ -89,6 +100,12 @@ export default {
 
 <style lang="scss">
   .WorkoutListCard {
+    a.WorkoutListCard__titleLink {
+      border: 0;
+      color: #fff;
+      text-decoration: none;
+    }
+
     .v-card__title {
       padding: 7px 16px 10px;
     }

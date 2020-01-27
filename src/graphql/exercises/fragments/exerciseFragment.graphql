@@ -12,5 +12,6 @@ fragment Exercise on Exercise {
     pivot {
         amount
         mode
+        rest
     }
 }

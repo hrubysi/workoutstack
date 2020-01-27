@@ -2,11 +2,13 @@
 
 mutation CreateWorkout(
     $name: String!
-    $public: Boolean!
     $user_id: Int!
     $rounds: Int!
     $tags: [ID!]
     $exercises: [ExerciseWorkoutBelongsToManyPivot!]
+    $public: Boolean
+    $short_rest: Int
+    $long_rest: Int
 ) {
     createWorkout(input: {
         name: $name,
@@ -15,6 +17,8 @@ mutation CreateWorkout(
         rounds: $rounds
         exercises: {connect: $exercises}
         tags: {connect: $tags}
+        short_rest: $short_rest
+        long_rest: $long_rest
     }) {
         ...Workout
     }

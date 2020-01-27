@@ -4,14 +4,20 @@ import HomePage from '@/views/HomePage'
 import ExercisesPage from '@/views/ExercisesPage'
 import WorkoutsPage from '@/views/WorkoutsPage'
 import WorkoutDetailPage from '@/views/WorkoutDetailPage'
+import WorkoutEditPage from '@/views/WorkoutEditPage'
 
 Vue.use(VueRouter)
 
 const routes = [
+  // {
+  //   path: '/',
+  //   name: 'home',
+  //   component: HomePage,
+  // },
   {
     path: '/',
     name: 'home',
-    component: HomePage,
+    component: ExercisesPage,
   },
   {
     path: '/exercises/create',
@@ -37,7 +43,7 @@ const routes = [
   {
     path: '/workouts/create',
     name: 'createWorkout',
-    component: WorkoutDetailPage,
+    component: WorkoutEditPage,
     props: {
       create: true,
     },
@@ -46,6 +52,11 @@ const routes = [
     path: '/workouts/:id',
     name: 'workoutDetail',
     component: WorkoutDetailPage,
+  },
+  {
+    path: '/workouts/:id/edit',
+    name: 'workoutEdit',
+    component: WorkoutEditPage,
   },
   {
     path: '/workouts',

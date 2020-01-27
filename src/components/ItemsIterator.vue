@@ -11,7 +11,9 @@
       <slot
         v-else
         name="empty"
-      />
+      >
+        Žádné výsledky
+      </slot>
     </template>
     <AppPagination
       v-if="paginatedItems.length"

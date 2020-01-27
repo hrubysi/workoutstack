@@ -51,28 +51,30 @@ export default {
         then()
       })
     },
-    create({ commit }, { userId, exercise, then = () => {} } = {}) {
+    create({ commit }, { userId, workout, then = () => {} } = {}) {
+      let data = null
       commit('SET_LOADING', true)
       apollo.mutate({
         mutation: mutations.create,
         variables: {
           user_id: userId,
-          ...exercise,
+          ...workout,
         },
       }).then((result) => {
+        data = result.data.createWorkout
         commit('ADD_WORKOUT', result.data.createWorkout)
       }).catch(e => {
         console.log(e)
       }).finally(() => {
         commit('SET_LOADING', false)
-        then()
+        then(data.id)
       })
     },
-    update({ commit }, { exercise, then = () => {} } = {}) {
+    update({ commit }, { workout, then = () => {} } = {}) {
       commit('SET_LOADING', true)
       apollo.mutate({
         mutation: mutations.update,
-        variables: exercise,
+        variables: workout,
       }).then((result) => {
         commit('UPDATE_WORKOUT', result.data.updateWorkout)
       }).catch(e => {

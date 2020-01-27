@@ -12,7 +12,7 @@
         <template v-slot:default="{ items }">
           <v-expansion-panels>
             <draggable
-              v-model="items"
+              :list="items"
               v-bind="draggableOptions"
               style="width: 100%"
               :sort="false"
@@ -65,7 +65,7 @@ export default {
       return { ...item }
     },
     draggableChange({ added }) {
-      this.list.splice(added.newIndex, 1)
+      // this.items.splice(added.newIndex, 1)
     },
   },
 }

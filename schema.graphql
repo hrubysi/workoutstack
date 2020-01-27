@@ -26,6 +26,7 @@ type Exercise {
 type ExerciseWorkoutPivot {
     amount: Int!
     mode: Int!
+    rest: Int
 }
 
 type ForgotPasswordResponse {
@@ -150,9 +151,11 @@ type UserPaginator {
 type Workout {
     exercises: [Exercise!]
     id: ID!
+    long_rest: Int
     name: String!
-    public: Boolean!
+    public: Boolean
     rounds: Int!
+    short_rest: Int
     tags: [Tag!]
     user_id: Int!
 }
@@ -194,10 +197,11 @@ input CreateTagInput {
 
 input CreateWorkoutInput {
     exercises: ExerciseWorkoutBelongsToMany
-    id: ID
+    long_rest: Int
     name: String!
-    public: Boolean!
+    public: Boolean
     rounds: Int!
+    short_rest: Int
     tags: TagBelongsToMany
     user_id: Int!
 }
@@ -212,6 +216,7 @@ input ExerciseWorkoutBelongsToManyPivot {
     amount: Int!
     id: ID!
     mode: Int!
+    rest: Int
 }
 
 input ExercisesFilter {
@@ -292,9 +297,11 @@ input UpdateTagInput {
 input UpdateWorkoutInput {
     exercises: ExerciseWorkoutBelongsToMany
     id: ID!
+    long_rest: Int
     name: String
     public: Boolean
     rounds: Int
+    short_rest: Int
     tags: TagBelongsToMany
 }
 

@@ -21,23 +21,27 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
-      <v-divider />
-      <v-list dense>
-        <v-list-item-group>
-          <v-list-item
-            v-for="(item, i) in adminNav"
-            :key="`nav-item-${i}`"
-            :to="item.link"
-          >
-            <v-list-item-action>
-              <v-icon>mdi-{{ item.icon }}</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title" />
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
+      <template v-if="adminNav.length">
+        <v-divider />
+        <v-list
+          dense
+        >
+          <v-list-item-group>
+            <v-list-item
+              v-for="(item, i) in adminNav"
+              :key="`nav-item-${i}`"
+              :to="item.link"
+            >
+              <v-list-item-action>
+                <v-icon>mdi-{{ item.icon }}</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title" />
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </template>
     </v-navigation-drawer>
 
     <v-app-bar
@@ -55,6 +59,7 @@
               fab
               small
               color="accent"
+              :loading="isMeLoading"
               v-on="on"
             >
               <v-icon>
@@ -73,7 +78,9 @@
           <v-list dense>
             <v-list-item>
               <v-list-item-content>
-                <v-btn @click="logout">
+                <v-btn
+                  @click="logout"
+                >
                   Odhlásit se
                 </v-btn>
               </v-list-item-content>
@@ -85,6 +92,7 @@
               fab
               small
               color="primary"
+              :loading="isMeLoading"
               v-on="on"
             >
               <v-icon>
@@ -115,11 +123,11 @@ export default {
     return {
       user: null,
       nav: [
-        {
-          title: 'Přehled',
-          icon: 'eye',
-          link: '/',
-        },
+        // {
+        //   title: 'Přehled',
+        //   icon: 'eye',
+        //   link: '/',
+        // },
         {
           title: 'Cviky',
           icon: 'dumbbell',
@@ -131,18 +139,20 @@ export default {
           link: '/workouts',
         },
       ],
-      adminNav: [
-        {
-          title: 'Správa tagů',
-          icon: 'tag',
-          link: '/admin/tags',
-        },
-      ],
+      adminNav: [],
+      // adminNav: [
+      //   {
+      //     title: 'Správa tagů',
+      //     icon: 'tag',
+      //     link: '/admin/tags',
+      //   },
+      // ],
     }
   },
   computed: {
     ...mapGetters({
       me: 'user/getMe',
+      isMeLoading: 'user/isLoading',
     }),
     isLogged() {
       return !!this.me.id

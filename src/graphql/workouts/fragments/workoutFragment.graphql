@@ -7,6 +7,8 @@ fragment Workout on Workout {
     user_id
     public
     rounds
+    short_rest
+    long_rest
     tags {
         ...Tag
     }
