@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <AppSnackbar />
     <v-navigation-drawer
       app
       clipped

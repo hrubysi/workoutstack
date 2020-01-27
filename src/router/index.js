@@ -6,7 +6,13 @@ import WorkoutsPage from '@/views/WorkoutsPage'
 import WorkoutDetailPage from '@/views/WorkoutDetailPage'
 import WorkoutEditPage from '@/views/WorkoutEditPage'
 
+import { getToken } from '@/plugins/apollo'
+
 Vue.use(VueRouter)
+
+const beforeEnter = (to, from, next) => {
+  next(!!getToken())
+}
 
 const routes = [
   // {
@@ -18,6 +24,9 @@ const routes = [
     path: '/',
     name: 'home',
     component: ExercisesPage,
+    beforeEnter(to, from, next) {
+      next('/exercises')
+    },
   },
   {
     path: '/exercises/create',
@@ -26,6 +35,7 @@ const routes = [
     props: {
       create: true,
     },
+    beforeEnter,
   },
   {
     path: '/exercises/detail/:id',
@@ -47,6 +57,7 @@ const routes = [
     props: {
       create: true,
     },
+    beforeEnter,
   },
   {
     path: '/workouts/:id',
@@ -57,6 +68,7 @@ const routes = [
     path: '/workouts/:id/edit',
     name: 'workoutEdit',
     component: WorkoutEditPage,
+    beforeEnter,
   },
   {
     path: '/workouts',

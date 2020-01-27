@@ -51,6 +51,7 @@
               :to="{name: 'exerciseDetail', params: {id: exercise.id}}"
               height="100%"
               hover
+              color="secondary"
             >
               <v-card-title>
                 {{ exercise.name }}

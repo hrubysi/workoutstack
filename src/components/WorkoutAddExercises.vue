@@ -1,5 +1,8 @@
 <template>
-  <v-card :loading="loading">
+  <v-card
+    :loading="loading"
+    color="secondary"
+  >
     <v-card-title>Dostupné cviky</v-card-title>
     <v-card-subtitle class="mt-0">
       <ExerciseFilters v-model="filters" />
@@ -77,7 +80,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-
-</style>

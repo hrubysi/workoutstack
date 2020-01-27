@@ -2,6 +2,7 @@
   <v-card
     class="WorkoutListCard"
     height="100%"
+    color="secondary"
   >
     <router-link
       :to="{name: 'workoutDetail', params: {id: workout.id}}"
@@ -38,7 +39,7 @@
           >
             mdi-timer-sand
           </v-icon>
-          <span class="subtitle-2">30s / 60s</span>
+          <span class="subtitle-2">{{ workout.short_rest }}s / {{ workout.long_rest }}s</span>
         </div>
       </div>
       <div
@@ -63,10 +64,10 @@
           flat
         >
           <v-expansion-panel>
-            <v-expansion-panel-header>
+            <v-expansion-panel-header color="secondary">
               Cviky
             </v-expansion-panel-header>
-            <v-expansion-panel-content>
+            <v-expansion-panel-content color="secondary">
               <v-list
                 dense
                 rounded

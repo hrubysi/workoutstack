@@ -6,7 +6,7 @@
       height="100%"
       :loading="loading"
     >
-      <div class="py-3 px-2">
+      <div class="py-3 px-5">
         <div v-if="edit || !exercise">
           <ValidationObserver v-slot="{ handleSubmit, failed }">
             <v-form @submit.prevent="handleSubmit(saveExercise)">
@@ -150,7 +150,7 @@
           <v-card
             v-if="exercise.youtube_id"
             class="mt-2"
-            color="grey darken-4"
+            color="grey darken-3"
             flat
           >
             <v-card-title>
@@ -173,8 +173,9 @@
             </v-card-text>
           </v-card>
           <v-card
+            v-if="exercise.description"
             class="mt-4"
-            color="grey darken-4"
+            color="grey darken-3"
             flat
           >
             <v-card-title>

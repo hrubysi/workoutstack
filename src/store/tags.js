@@ -32,7 +32,6 @@ export default {
       apollo.query({
         query: queries.all,
       }).then((result) => {
-        console.log(result)
         commit('SET_TAGS', result.data.tags)
       }).catch(e => {
         console.log(e)

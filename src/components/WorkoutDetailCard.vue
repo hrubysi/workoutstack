@@ -1,5 +1,6 @@
 <template>
   <v-card
+    color="secondary"
     class="WorkoutDetailCard"
     :loading="loading"
   >

@@ -12,7 +12,6 @@
           <v-tabs
             v-model="tab"
             align-with-title
-            background-color="secondary"
             grow
             icons-and-text
           >
