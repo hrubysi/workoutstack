@@ -62,7 +62,14 @@ export default {
   },
   methods: {
     handleClone(item) {
-      return { ...item }
+      return {
+        ...item,
+        pivot: {
+          mode: 0,
+          amount: 1,
+          rest: 0,
+        },
+      }
     },
     draggableChange({ added }) {
       // this.items.splice(added.newIndex, 1)

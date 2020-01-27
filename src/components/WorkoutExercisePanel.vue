@@ -1,28 +1,28 @@
 <template>
-  <v-expansion-panel>
+  <v-expansion-panel class="WorkoutExercisePanel">
     <v-expansion-panel-header
       color="grey darken-4"
       class="py-0"
       :expand-icon="editable ? 'mdi-pencil' : '$expand'"
       :disable-icon-rotate="editable"
     >
-      {{ exercise.name }}
+      <span
+        class="flex-grow-1"
+        :class="{'error--text': !hasAmount}"
+      >
+        {{ exercise.name }}
+      </span>
       <div
         v-if="exercise.pivot"
-        class="d-flex align-center ml-5"
+        class="d-flex flex-grow-0 align-center ml-2 mr-10"
       >
-        <template
-          v-if="exercise.pivot.amount"
-        >
+        <template v-if="exercise.pivot.amount">
           <div
             v-if="exercise.pivot.mode === 0"
             class="headline font-weight-regular"
           >
-            {{ exercise.pivot.amount }}
-            <span
-              class="title blue--text text--darken-3"
-              style="margin-left: 1px"
-            >x</span>
+            <span>{{ exercise.pivot.amount }}</span>
+            <span class="title blue--text text--darken-3">x</span>
           </div>
           <div
             v-else
@@ -39,7 +39,7 @@
         </template>
         <div
           v-if="restTimeOutput != null"
-          class="d-flex align-center ml-5 body-1"
+          class="d-flex align-center ml-4 body-1"
         >
           <v-icon color="blue darken-3">
             mdi-timer-sand
@@ -109,23 +109,39 @@
         </v-row>
         <v-row>
           <v-col md="6">
-            <v-text-field
-              v-model="form.amount"
-              :label="form.mode ? 'Doba trvání (s)' : 'Počet opakování'"
-              type="number"
-              min="1"
-            />
+            <ValidationProvider
+              v-slot="{ errors, failed }"
+              :name="label"
+              rules="required|numeric|minValue:1"
+            >
+              <v-text-field
+                v-model="form.amount"
+                :error="failed"
+                :error-messages="errors[0]"
+                :label="label"
+                type="number"
+                min="1"
+              />
+            </ValidationProvider>
           </v-col>
           <v-col
             v-if="enableCustomRestTime"
             md="6"
           >
-            <v-text-field
-              v-model="form.rest"
-              type="number"
-              label="Čas pauzy"
-              min="0"
-            />
+            <ValidationProvider
+              v-slot="{ errors, failed }"
+              name="Čas pauzy"
+              rules="required|numeric"
+            >
+              <v-text-field
+                v-model="form.rest"
+                :error="failed"
+                :error-messages="errors[0]"
+                type="number"
+                label="Čas pauzy"
+                min="0"
+              />
+            </ValidationProvider>
           </v-col>
         </v-row>
       </template>
@@ -134,9 +150,11 @@
 </template>
 
 <script>
+import { get } from 'lodash-es'
+
 const defaultForm = {
   mode: 0,
-  amount: '',
+  amount: 1,
   rest: 0,
 }
 
@@ -151,7 +169,7 @@ export default {
       required: true,
     },
     defaultRest: {
-      type: Number,
+      type: [String, Number],
       default: 0,
     },
   },
@@ -169,6 +187,12 @@ export default {
     restTimeOutput() {
       const restTime = this.enableCustomRestTime ? this.form.rest : this.defaultRest
       return Number.isInteger(parseInt(restTime)) ? restTime : null
+    },
+    label() {
+      return this.form.mode ? 'Doba trvání (s)' : 'Počet opakování'
+    },
+    hasAmount() {
+      return this.exercise.pivot ? Number.isInteger(parseInt(this.exercise.pivot.amount)) : true
     },
   },
   watch: {
@@ -196,8 +220,10 @@ export default {
 }
 </script>
 
-<style scoped>
-  .v-expansion-panel-content__wrap {
-    padding-bottom: 10px;
+<style>
+  .WorkoutExercisePanel {
+    .v-expansion-panel-content__wrap {
+      padding-bottom: 10px;
+    }
   }
 </style>

@@ -7,8 +7,8 @@
       <v-card-title>Načítaní...</v-card-title>
     </template>
     <template v-else>
-      <v-card-title class="flex-nowrap justify-space-between align-start">
-        <template v-if="workout && !editable">
+      <template v-if="workout && !editable">
+        <v-card-title class="flex-nowrap justify-space-between align-start">
           <span>{{ workout.name }}</span>
           <div class="d-flex ml-5">
             <template v-if="ownedByUser">
@@ -50,37 +50,8 @@
             <!--              <v-icon>mdi-play</v-icon>-->
             <!--            </v-btn>-->
           </div>
-        </template>
-        <template v-if="editable">
-          <v-text-field
-            v-model="form.name"
-            label="Název"
-          />
-          <v-btn
-            class="ml-5 mr-3"
-            color="accent"
-            dark
-            fab
-            small
-            :loading="loading"
-            @click="cancelEdit"
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-btn
-            color="primary"
-            dark
-            fab
-            small
-            :loading="loading"
-            @click="saveWorkout"
-          >
-            <v-icon>mdi-check</v-icon>
-          </v-btn>
-        </template>
-      </v-card-title>
-      <v-card-subtitle>
-        <template v-if="workout && !editable">
+        </v-card-title>
+        <v-card-subtitle>
           <div class="d-flex align-center mt-4">
             <div class="d-flex align-center mr-3">
               <v-icon class="mr-2">
@@ -111,91 +82,162 @@
               {{ tag.name }}
             </v-chip>
           </div>
-        </template>
-        <template v-if="editable">
-          <v-autocomplete
-            v-model="form.tags"
-            :items="tags"
-            :hide-details="true"
-            item-text="name"
-            item-value="id"
-            chips
-            dense
-            filled
-            small-chips
-            multiple
-            label="Tagy"
-            autocomplete="add-workout-form-tag"
-          />
-          <v-row>
-            <v-col>
-              <v-text-field
-                v-model="form.rounds"
-                type="number"
-                label="Počet kol"
-                prepend-inner-icon="mdi-restore"
-                min="0"
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="form.short_rest"
-                prepend-inner-icon="mdi-timer-sand"
-                type="number"
-                label="Krátká pauza"
-                hint="Mezi cviky"
-                min="0"
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="form.long_rest"
-                prepend-inner-icon="mdi-timer-sand"
-                type="number"
-                label="Dlouhá pauza"
-                hint="Mezi koly"
-                min="0"
-              />
-            </v-col>
-          </v-row>
-        </template>
-      </v-card-subtitle>
+        </v-card-subtitle>
+      </template>
 
-      <v-card-text>
-        <div class="subtitle-2 mb-2">
-          <v-icon small>
-            mdi-dumbbell
-          </v-icon>
-          Cviky:
-          <span
-            v-if="!(form.exercises.length || editable)"
-            class="pl-2 red--text text--darken-2"
-          >Zatím neobsahuje žádné cviky.</span>
-        </div>
+      <ValidationObserver v-slot="{ handleSubmit, failed }">
+        <v-form @submit.prevent="handleSubmit(saveWorkout)">
+          <template v-if="editable">
+            <v-card-title class="flex-nowrap justify-space-between align-start">
+              <ValidationProvider
+                v-slot="{ errors, failed }"
+                class="flex-grow-1"
+                name="Název"
+                rules="required|noTags|min:3"
+              >
+                <v-text-field
+                  v-model="form.name"
+                  :error="failed"
+                  :error-messages="errors[0]"
+                  label="Název*"
+                />
+              </ValidationProvider>
+              <div>
+                <v-btn
+                  class="ml-5 mr-3"
+                  color="accent"
+                  dark
+                  fab
+                  small
+                  :loading="loading"
+                  @click="cancelEdit"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-btn
+                  :loading="loading"
+                  :disabled="failed"
+                  color="primary"
+                  type="submit"
+                  dark
+                  fab
+                  small
+                >
+                  <v-icon>mdi-check</v-icon>
+                </v-btn>
+              </div>
+            </v-card-title>
+            <v-card-subtitle>
+              <v-autocomplete
+                v-model="form.tags"
+                :items="tags"
+                :hide-details="true"
+                item-text="name"
+                item-value="id"
+                label="Tagy"
+                autocomplete="add-workout-form-tag"
+                class="mt-2"
+                chips
+                dense
+                filled
+                small-chips
+                multiple
+              />
+              <v-row>
+                <v-col>
+                  <ValidationProvider
+                    v-slot="{ errors, failed }"
+                    name="Počet kol"
+                    rules="required|numeric|minValue:1"
+                  >
+                    <v-text-field
+                      v-model="form.rounds"
+                      :error="failed"
+                      :error-messages="errors[0]"
+                      type="number"
+                      label="Počet kol*"
+                      prepend-inner-icon="mdi-restore"
+                      min="1"
+                    />
+                  </ValidationProvider>
+                </v-col>
+                <v-col>
+                  <ValidationProvider
+                    v-slot="{ errors, failed }"
+                    name="Krátká pauza"
+                    rules="required|numeric"
+                  >
+                    <v-text-field
+                      v-model="form.short_rest"
+                      :error="failed"
+                      :error-messages="errors[0]"
+                      prepend-inner-icon="mdi-timer-sand"
+                      type="number"
+                      label="Krátká pauza*"
+                      hint="Mezi cviky"
+                      min="0"
+                    />
+                  </ValidationProvider>
+                </v-col>
+                <v-col>
+                  <ValidationProvider
+                    v-slot="{ errors, failed }"
+                    name="Dlouhá pauza"
+                    rules="required|numeric"
+                  >
+                    <v-text-field
+                      v-model="form.long_rest"
+                      :error="failed"
+                      :error-messages="errors[0]"
+                      prepend-inner-icon="mdi-timer-sand"
+                      type="number"
+                      label="Dlouhá pauza*"
+                      hint="Mezi koly"
+                      min="0"
+                    />
+                  </ValidationProvider>
+                </v-col>
+              </v-row>
+            </v-card-subtitle>
+          </template>
 
-        <div
-          v-if="form.exercises.length || editable"
-          class="WorkoutDetailCard__dropArea"
-        >
-          <v-expansion-panels>
-            <draggable
-              v-model="form.exercises"
-              :disabled="!editable"
-              v-bind="draggableOptions"
-              style="width: 100%"
+          <v-card-text>
+            <div class="subtitle-2 mb-2">
+              <v-icon small>
+                mdi-dumbbell
+              </v-icon>
+              Cviky:
+              <span
+                v-if="!(form.exercises.length || editable)"
+                class="pl-2 red--text text--darken-2"
+              >Zatím neobsahuje žádné cviky.</span>
+            </div>
+
+            <div
+              v-if="form.exercises.length || editable"
+              class="WorkoutDetailCard__dropArea"
             >
-              <WorkoutExercisePanel
-                v-for="item in form.exercises"
-                :key="`WorkoutItem-${item.id}`"
-                :editable="editable"
-                :exercise="item"
-                :default-rest="form.short_rest"
-                @exerciseInput="updateExercisePivot"
-              />
-            </draggable>
-          </v-expansion-panels>
-        </div>
-      </v-card-text>
+              <v-expansion-panels v-model="expansionPanels">
+                <draggable
+                  v-model="form.exercises"
+                  :disabled="!editable"
+                  v-bind="draggableOptions"
+                  style="width: 100%"
+                >
+                  <WorkoutExercisePanel
+                    v-for="(item, index) in form.exercises"
+                    :key="`WorkoutItem-${item.id}-${index}`"
+                    :editable="editable"
+                    :exercise="item"
+                    :default-rest="form.short_rest"
+                    @exerciseInput="updateExercisePivot"
+                  />
+                </draggable>
+              </v-expansion-panels>
+            </div>
+          </v-card-text>
+        </v-form>
+      </ValidationObserver>
     </template>
   </v-card>
 </template>
@@ -234,6 +276,7 @@ export default {
   },
   data() {
     return {
+      expansionPanels: null,
       form: this.workout ? cloneDeep(this.workout) : cloneDeep(defaultForm),
       draggableOptions: {
         group: {

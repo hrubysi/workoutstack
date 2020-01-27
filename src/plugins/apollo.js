@@ -79,6 +79,14 @@ export function createProvider(options = {}) {
 
 export default createProvider().defaultClient
 
+export function getToken() {
+  if (typeof localStorage !== 'undefined') {
+    return localStorage.getItem(AUTH_TOKEN)
+  }
+
+  return null
+}
+
 // Manually call this when user log in
 export async function onLogin(apolloClient, token) {
   if (typeof localStorage !== 'undefined' && token) {

@@ -8,62 +8,93 @@
     >
       <div class="py-3 px-2">
         <div v-if="edit || !exercise">
-          <div class="d-flex justify-space-between align-center">
-            <v-text-field
-              v-model="form.name"
-              class="headline"
-              label="Název *"
-            />
-            <v-btn
-              color="accent"
-              class="ml-5"
-              fab
-              small
-              :loading="loading"
-              @click="cancelEdit"
-            >
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-            <v-btn
-              color="primary"
-              class="ml-3"
-              fab
-              small
-              :loading="loading"
-              @click="saveExercise"
-            >
-              <v-icon>mdi-check</v-icon>
-            </v-btn>
-          </div>
+          <ValidationObserver v-slot="{ handleSubmit, failed }">
+            <v-form @submit.prevent="handleSubmit(saveExercise)">
+              <div class="d-flex justify-space-between align-center">
+                <ValidationProvider
+                  v-slot="{ errors, failed }"
+                  class="flex-grow-1"
+                  name="Název"
+                  rules="required|noTags|min:3"
+                >
+                  <v-text-field
+                    v-model="form.name"
+                    :error="failed"
+                    :error-messages="errors[0]"
+                    class="headline"
+                    label="Název *"
+                  />
+                </ValidationProvider>
+                <div>
+                  <v-btn
+                    color="accent"
+                    class="ml-5"
+                    fab
+                    small
+                    :loading="loading"
+                    @click="cancelEdit"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                  <v-btn
+                    :loading="loading"
+                    :disabled="failed"
+                    class="ml-3"
+                    color="primary"
+                    type="submit"
+                    fab
+                    small
+                  >
+                    <v-icon>mdi-check</v-icon>
+                  </v-btn>
+                </div>
+              </div>
 
-          <div class="mt-8">
-            <v-autocomplete
-              v-model="form.tags"
-              :items="tags"
-              item-text="name"
-              item-value="id"
-              chips
-              dense
-              small-chips
-              multiple
-              label="Tagy"
-            />
-            <v-text-field
-              v-model="form.youtube_id"
-              dense
-              filled
-              label="Youtube Video ID"
-            />
-            <v-textarea
-              v-model="form.description"
-              auto-grow
-              filled
-              no-resize
-              label="Popis"
-            />
-          </div>
+              <div class="mt-8">
+                <v-autocomplete
+                  v-model="form.tags"
+                  :items="tags"
+                  item-text="name"
+                  item-value="id"
+                  chips
+                  dense
+                  small-chips
+                  multiple
+                  label="Tagy"
+                />
+                <ValidationProvider
+                  v-slot="{ errors, failed }"
+                  name="Youtube Video ID"
+                  rules="alphaNum"
+                >
+                  <v-text-field
+                    v-model="form.youtube_id"
+                    :error="failed"
+                    :error-messages="errors[0]"
+                    dense
+                    filled
+                    label="Youtube Video ID"
+                  />
+                </ValidationProvider>
+                <ValidationProvider
+                  v-slot="{ errors, failed }"
+                  name="Popis"
+                  rules="noTags"
+                >
+                  <v-textarea
+                    v-model="form.description"
+                    :error="failed"
+                    :error-messages="errors[0]"
+                    auto-grow
+                    filled
+                    no-resize
+                    label="Popis"
+                  />
+                </ValidationProvider>
+              </div>
+            </v-form>
+          </ValidationObserver>
         </div>
-
         <div
           v-if="exercise"
           v-show="!edit"

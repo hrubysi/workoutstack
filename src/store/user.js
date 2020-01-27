@@ -1,4 +1,4 @@
-import apollo, { onLogin, onLogout } from '@/plugins/apollo'
+import apollo, { onLogin, onLogout, getToken } from '@/plugins/apollo'
 import { mutations, queries } from '@/graphql/users'
 
 const defaultValues = {
@@ -40,7 +40,10 @@ export default {
   actions: {
     async fetchUser({ commit, dispatch }, token) {
       if (!token) {
-        return
+        token = getToken()
+        if (!token) {
+          return
+        }
       }
 
       commit('SET_LOADING', true)
