@@ -1,7 +1,6 @@
 <template>
   <v-card
     class="WorkoutListCard"
-    height="100%"
     color="secondary"
   >
     <router-link

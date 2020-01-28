@@ -165,7 +165,7 @@
                 <v-col>
                   <ValidationProvider
                     v-slot="{ errors, failed }"
-                    name="Krátká pauza"
+                    name="Krátká pauza (s)"
                     rules="required|numeric"
                   >
                     <v-text-field
@@ -183,7 +183,7 @@
                 <v-col>
                   <ValidationProvider
                     v-slot="{ errors, failed }"
-                    name="Dlouhá pauza"
+                    name="Dlouhá pauza (s)"
                     rules="required|numeric"
                   >
                     <v-text-field

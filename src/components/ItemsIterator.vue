@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       page: 1,
-      perPage: 8,
+      perPage: 12,
     }
   },
   computed: {
@@ -62,7 +62,11 @@ export default {
 
           let tags = true
           if (filters.tags.length) {
-            tags = !!item.tags.length && item.tags.some(tag => filters.tags.includes(tag.id))
+            filters.tags.forEach(tag => {
+              if (!item.tags.some(itemTag => itemTag.id === tag)) {
+                tags = false
+              }
+            })
           }
 
           return search && tags

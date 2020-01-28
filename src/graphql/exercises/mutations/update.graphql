@@ -1,7 +1,19 @@
 #import '../fragments/exerciseFragment.graphql'
 
-mutation UpdateExercise($id: ID!, $name: String!, $description: String!, $tags: [ID!]) {
-    updateExercise(input: {id: $id, name: $name, description: $description, tags: {sync: $tags}}) {
+mutation UpdateExercise(
+    $id: ID!,
+    $name: String!,
+    $description: String,
+    $youtube_id: String,
+    $tags: [ID!])
+{
+    updateExercise(input: {
+        id: $id,
+        name: $name,
+        description: $description,
+        youtube_id: $youtube_id,
+        tags: {sync: $tags}
+    }) {
         ...Exercise
     }
 }
